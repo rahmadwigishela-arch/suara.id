@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUARA.ID — Platform Aspirasi Perempuan Desa</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2333;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #d4a853;
+    --accent2: #e8c47a;
+    --green: #3fb950;
+    --red: #e05151;
+    --teal: #39c5bb;
+    --purple: #a78bfa;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── TOP NAV ─── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 60px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,17,23,0.95);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #b8832e);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; color: #0d1117;
+  }
+  .logo-text { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+  .logo-text span { color: var(--accent); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 400;
+    color: var(--muted); cursor: pointer; border: none; background: transparent;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--bg3); }
+  .nav-tab.active { color: var(--text); background: var(--bg3); }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .badge-new {
+    background: rgba(212,168,83,0.15); color: var(--accent);
+    border: 1px solid rgba(212,168,83,0.3);
+    font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500;
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #3fb950, #1a7f37);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: white; cursor: pointer;
+  }
+
+  /* ─── LAYOUT ─── */
+  .app { display: flex; height: calc(100vh - 60px); overflow: hidden; }
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .sidebar-section { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.5rem 0.5rem 0.25rem; margin-top: 0.5rem; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: var(--radius-sm);
+    color: var(--muted); cursor: pointer; font-size: 13px;
+    transition: all 0.15s; border: 1px solid transparent;
+  }
+  .sidebar-item:hover { color: var(--text); background: var(--bg3); }
+  .sidebar-item.active { color: var(--text); background: var(--bg3); border-color: var(--border); }
+  .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+  .sidebar-item.active svg { opacity: 1; }
+  .sidebar-count {
+    margin-left: auto; background: rgba(212,168,83,0.15);
+    color: var(--accent); font-size: 11px; padding: 1px 7px; border-radius: 99px;
+  }
+  .main { flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  /* ─── STATS ROW ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--card-accent, var(--accent));
+  }
+  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .stat-sub span { color: var(--green); }
+
+  /* ─── SECTION HEADER ─── */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .section-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #0d1117; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--bg3); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  /* ─── MAP SECTION ─── */
+  .map-insight-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+  .map-placeholder {
+    background: var(--bg3); border-radius: var(--radius-sm);
+    height: 280px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .map-svg { width: 100%; height: 100%; }
+  .map-overlay {
+    position: absolute; bottom: 12px; left: 12px; right: 12px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .map-legend-item {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(13,17,23,0.85); backdrop-filter: blur(8px);
+    padding: 4px 10px; border-radius: 99px;
+    font-size: 11px; color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .map-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ─── INSIGHT LIST ─── */
+  .insight-list { display: flex; flex-direction: column; gap: 8px; margin-top: 0.5rem; }
+  .insight-item {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .insight-item:hover { border-color: var(--border2); }
+  .insight-item.urgent { border-left: 3px solid var(--red); }
+  .insight-item.medium { border-left: 3px solid var(--accent); }
+  .insight-item.info { border-left: 3px solid var(--teal); }
+  .insight-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .insight-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .insight-meta { font-size: 11px; color: var(--muted); }
+  .tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 500;
+    white-space: nowrap;
+  }
+  .tag-red { background: rgba(224,81,81,0.15); color: #ff8080; border: 1px solid rgba(224,81,81,0.2); }
+  .tag-amber { background: rgba(212,168,83,0.15); color: var(--accent); border: 1px solid rgba(212,168,83,0.2); }
+  .tag-teal { background: rgba(57,197,187,0.15); color: var(--teal); border: 1px solid rgba(57,197,187,0.2); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 99px; margin-top: 8px; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+
+  /* ─── RECORDINGS SECTION ─── */
+  .recordings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .recording-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1rem;
+    transition: all 0.2s; cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .recording-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .recording-card.playing { border-color: rgba(212,168,83,0.4); }
+  .recording-card.playing::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(212,168,83,0.04), transparent);
+    pointer-events: none;
+  }
+  .rec-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .rec-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500; color: white;
+  }
+  .rec-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-dot.done { background: var(--green); }
+  .status-dot.processing { background: var(--accent); animation: pulse 1.5s infinite; }
+  .status-dot.review { background: var(--purple); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .rec-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .rec-loc { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .rec-quote {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+    border-left: 2px solid var(--border2); padding-left: 10px; margin-bottom: 10px;
+  }
+  .rec-footer { display: flex; align-items: center; justify-content: space-between; }
+  .waveform { display: flex; align-items: center; gap: 1.5px; height: 20px; }
+  .wave-bar {
+    width: 2px; border-radius: 1px; background: var(--muted);
+    transition: background 0.3s;
+  }
+  .recording-card.playing .wave-bar { background: var(--accent); animation: wave var(--d, 0.6s) ease-in-out infinite alternate; }
+  @keyframes wave { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+  .play-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #0d1117;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 10px; transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { background: var(--accent2); transform: scale(1.05); }
+
+  /* ─── AI ANALYSIS PANEL ─── */
+  .analysis-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .theme-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 0.75rem; }
+  .theme-bar-item { display: flex; flex-direction: column; gap: 5px; }
+  .theme-bar-header { display: flex; justify-content: space-between; font-size: 12px; }
+  .theme-bar-label { color: var(--text); }
+  .theme-bar-pct { color: var(--muted); }
+  .theme-bar-track { height: 6px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .theme-bar-fill { height: 100%; border-radius: 99px; transition: width 1.2s ease; }
+
+  .sentiment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.75rem; }
+  .sentiment-cell {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px; text-align: center;
+  }
+  .sentiment-emoji { font-size: 20px; margin-bottom: 4px; }
+  .sentiment-label { font-size: 11px; color: var(--muted); }
+  .sentiment-val { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; }
+
+  /* ─── POLICY BRIEF SECTION ─── */
+  .brief-card {
+    background: linear-gradient(135deg, rgba(212,168,83,0.08), rgba(212,168,83,0.02));
+    border: 1px solid rgba(212,168,83,0.2);
+    border-radius: var(--radius); padding: 1.5rem;
+  }
+  .brief-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+  .brief-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .brief-subtitle { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .brief-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  .brief-section-title {
+    font-size: 11px; font-weight: 500; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+  }
+  .brief-text { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .brief-action {
+    background: rgba(13,17,23,0.6); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 10px; margin-top: 6px;
+    font-size: 12px; color: var(--text); display: flex; align-items: flex-start; gap: 7px;
+  }
+  .brief-action-num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(212,168,83,0.2); color: var(--accent);
+    font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ─── RECORD MODAL ─── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    z-index: 200; align-items: center; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 2rem; width: 420px;
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform: scale(0.95) translateY(8px); } to { opacity:1; transform: none; } }
+  .modal-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .rec-visualizer {
+    height: 60px; background: var(--bg3); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; gap: 2px;
+    margin-bottom: 1.5rem; overflow: hidden;
+  }
+  .vis-bar {
+    width: 3px; border-radius: 2px; background: var(--border2);
+    transition: all 0.1s;
+  }
+  .recording-active .vis-bar {
+    background: var(--accent);
+    animation: visWave var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes visWave { from { height: 6px; } to { height: var(--h, 40px); } }
+  .modal-lang { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 1.5rem; }
+  .lang-btn {
+    padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: transparent; color: var(--muted); font-size: 12px; cursor: pointer;
+    text-align: center; transition: all 0.15s;
+  }
+  .lang-btn:hover, .lang-btn.selected { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.08); }
+  .modal-btn-row { display: flex; gap: 8px; }
+  .rec-big-btn {
+    flex: 1; padding: 14px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500; cursor: pointer; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s;
+  }
+  .rec-start { background: var(--accent); color: #0d1117; }
+  .rec-start:hover { background: var(--accent2); }
+  .rec-stop { background: var(--red); color: white; }
+  .rec-stop:hover { opacity: 0.9; }
+  .processing-step {
+    display: none; flex-direction: column; gap: 10px;
+    padding: 1rem; background: var(--bg3); border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+  }
+  .processing-step.show { display: flex; }
+  .proc-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .proc-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+  .proc-done { background: rgba(63,185,80,0.2); color: var(--green); }
+  .proc-loading { background: rgba(212,168,83,0.2); color: var(--accent); animation: pulse 1s infinite; }
+  .proc-pending { background: var(--bg2); color: var(--muted); }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+  /* ─── SECTION DIVIDER ─── */
+  .section-divider {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text);
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 320px;
+  }
+  .toast.show { transform: none; opacity: 1; }
+  .toast-icon { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-mark">S</div>
+    <div class="logo-text">SUARA<span>.ID</span></div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="nav-tab" onclick="showTab('rekaman',this)">Rekaman</button>
+    <button class="nav-tab" onclick="showTab('analisis',this)">Analisis AI</button>
+    <button class="nav-tab" onclick="showTab('brief',this)">Brief Kebijakan</button>
+  </div>
+  <div class="nav-right">
+    <span class="badge-new">✦ Prototype v0.1</span>
+    <div class="avatar" title="Bappeda Lampung">BL</div>
+  </div>
+</nav>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Wilayah</div>
+    <div class="sidebar-item active">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="7" r="3"/><path d="M8 1C4.69 1 2 3.69 2 7c0 4.5 6 8 6 8s6-3.5 6-8c0-3.31-2.69-6-6-6z"/></svg>
+      Semua Provinsi <span class="sidebar-count">34</span>
+    </div>
+    <div class="sidebar-item" onclick="selectRegion(this, 'Lampung')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L6 4l4 6 2-3 2 5"/></svg>
+      Lampung <span class="sidebar-count">847</span>
+    </div>
+    <div class="sidebar-item" onclick="selectRegion(this, 'NTT')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L6 4l4 6 2-3 2 5"/></svg>
+      NTT <span class="sidebar-count">1.2k</span>
+    </div>
+    <div class="sidebar-item" onclick="selectRegion(this, 'Papua Barat')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L6 4l4 6 2-3 2 5"/></svg>
+      Papua Barat <span class="sidebar-count">634</span>
+    </div>
+    <div class="sidebar-item" onclick="selectRegion(this, 'Maluku')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L6 4l4 6 2-3 2 5"/></svg>
+      Maluku <span class="sidebar-count">512</span>
+    </div>
+
+    <div class="sidebar-section">Kategori Isu</div>
+    <div class="sidebar-item" onclick="filterIssue(this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 14s-6-4.5-6-8a6 6 0 1112 0c0 3.5-6 8-6 8z"/></svg>
+      Kesehatan
+    </div>
+    <div class="sidebar-item" onclick="filterIssue(this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V4l6-3 6 3v8l-6 3-6-3z"/></svg>
+      Pendidikan
+    </div>
+    <div class="sidebar-item" onclick="filterIssue(this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+      KDRT / Kekerasan
+    </div>
+    <div class="sidebar-item" onclick="filterIssue(this)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>
+      Ekonomi
+    </div>
+
+    <div class="sidebar-section">Aksi Cepat</div>
+    <div class="sidebar-item" onclick="openRecordModal()" style="color:var(--accent);border-color:rgba(212,168,83,0.2)">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="6" r="3"/><path d="M3 14c0-2.76 2.24-5 5-5s5 2.24 5 5"/></svg>
+      Rekam Suara Baru
+    </div>
+    <div class="sidebar-item" onclick="showToast('📤 Mengekspor laporan PDF...','Laporan dikirim ke email terdaftar')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 10v3h10v-3M8 2v8M5 7l3 3 3-3"/></svg>
+      Ekspor Laporan
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+
+    <!-- ─── DASHBOARD TAB ─── -->
+    <div id="tab-dashboard">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card" style="--card-accent: var(--accent)">
+          <div class="stat-label">Total Rekaman Masuk</div>
+          <div class="stat-value">4.847</div>
+          <div class="stat-sub"><span>↑ 312</span> minggu ini</div>
+        </div>
+        <div class="stat-card" style="--card-accent: var(--green)">
+          <div class="stat-label">Telah Dianalisis AI</div>
+          <div class="stat-value">4.201</div>
+          <div class="stat-sub"><span>87%</span> dari total rekaman</div>
+        </div>
+        <div class="stat-card" style="--card-accent: var(--teal)">
+          <div class="stat-label">Brief Kebijakan Dikirim</div>
+          <div class="stat-value">128</div>
+          <div class="stat-sub">ke <span>34</span> instansi pemerintah</div>
+        </div>
+        <div class="stat-card" style="--card-accent: var(--purple)">
+          <div class="stat-label">Bahasa Daerah Didukung</div>
+          <div class="stat-value">23</div>
+          <div class="stat-sub">termasuk <span>5</span> dialek Papua</div>
+        </div>
+      </div>
+
+      <!-- Map & Insights -->
+      <div class="map-insight-row">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Peta Distribusi Suara</div>
+            <button class="btn btn-ghost btn-sm">Live ●</button>
+          </div>
+          <div class="map-placeholder">
+            <svg class="map-svg" viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+              <!-- Indonesia simplified silhouette -->
+              <defs>
+                <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#d4a853" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#d4a853" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="g2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#39c5bb" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#39c5bb" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="g3" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#e05151" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#e05151" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <!-- Sumatra -->
+              <ellipse cx="120" cy="140" rx="90" ry="45" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <!-- Java -->
+              <ellipse cx="270" cy="180" rx="80" ry="25" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <!-- Kalimantan -->
+              <ellipse cx="310" cy="110" rx="70" ry="65" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <!-- Sulawesi -->
+              <ellipse cx="390" cy="120" rx="35" ry="60" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+              <!-- Papua -->
+              <ellipse cx="460" cy="140" rx="38" ry="45" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+
+              <!-- Hotspot Lampung (Sumatra selatan) -->
+              <circle cx="155" cy="170" r="40" fill="url(#g1)"/>
+              <circle cx="155" cy="170" r="12" fill="rgba(212,168,83,0.4)" stroke="var(--accent)" stroke-width="1.5"/>
+              <circle cx="155" cy="170" r="5" fill="var(--accent)"/>
+              <text x="155" y="158" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="DM Sans">847</text>
+
+              <!-- NTT hotspot -->
+              <circle cx="355" cy="195" r="35" fill="url(#g3)"/>
+              <circle cx="355" cy="195" r="10" fill="rgba(224,81,81,0.4)" stroke="#e05151" stroke-width="1.5"/>
+              <circle cx="355" cy="195" r="5" fill="#e05151"/>
+              <text x="355" y="183" text-anchor="middle" fill="#ff8080" font-size="9" font-family="DM Sans">1.2k</text>
+
+              <!-- Papua Barat hotspot -->
+              <circle cx="445" cy="130" r="30" fill="url(#g2)"/>
+              <circle cx="445" cy="130" r="9" fill="rgba(57,197,187,0.4)" stroke="var(--teal)" stroke-width="1.5"/>
+              <circle cx="445" cy="130" r="4" fill="var(--teal)"/>
+              <text x="445" y="119" text-anchor="middle" fill="var(--teal)" font-size="9" font-family="DM Sans">634</text>
+
+              <!-- Small dots scattered -->
+              <circle cx="90" cy="110" r="4" fill="rgba(212,168,83,0.3)"/><circle cx="90" cy="110" r="2" fill="var(--accent)" opacity="0.6"/>
+              <circle cx="200" cy="160" r="4" fill="rgba(212,168,83,0.3)"/><circle cx="200" cy="160" r="2" fill="var(--accent)" opacity="0.6"/>
+              <circle cx="265" cy="155" r="4" fill="rgba(167,139,250,0.3)"/><circle cx="265" cy="155" r="2" fill="var(--purple)" opacity="0.6"/>
+              <circle cx="300" cy="130" r="3" fill="rgba(57,197,187,0.3)"/><circle cx="300" cy="130" r="1.5" fill="var(--teal)" opacity="0.6"/>
+              <circle cx="390" cy="100" r="4" fill="rgba(224,81,81,0.3)"/><circle cx="390" cy="100" r="2" fill="#e05151" opacity="0.6"/>
+            </svg>
+            <div class="map-overlay">
+              <div class="map-legend-item"><div class="map-dot" style="background:var(--accent)"></div>Kritis tinggi</div>
+              <div class="map-legend-item"><div class="map-dot" style="background:#e05151"></div>Mendesak</div>
+              <div class="map-legend-item"><div class="map-dot" style="background:var(--teal)"></div>Aktif</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title">Insight Terkini</div>
+            <span class="tag tag-amber">Live</span>
+          </div>
+          <div class="insight-list">
+            <div class="insight-item urgent" onclick="showToast('📋','Membuka detail laporan NTT...')">
+              <div class="insight-header">
+                <div class="insight-title">Krisis bidan desa — NTT Selatan</div>
+                <span class="tag tag-red">Kritis</span>
+              </div>
+              <div class="insight-meta">847 suara · Kes. Ibu & Anak</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:87%;background:#e05151"></div></div>
+            </div>
+            <div class="insight-item medium" onclick="showToast('📋','Membuka detail laporan Lampung...')">
+              <div class="insight-header">
+                <div class="insight-title">Perkawinan anak meningkat — Lampung Barat</div>
+                <span class="tag tag-amber">Penting</span>
+              </div>
+              <div class="insight-meta">512 suara · Pendidikan & KDRT</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:63%;background:var(--accent)"></div></div>
+            </div>
+            <div class="insight-item info" onclick="showToast('📋','Membuka detail laporan Papua Barat...')">
+              <div class="insight-header">
+                <div class="insight-title">Akses modal usaha terbatas — Papua Barat</div>
+                <span class="tag tag-teal">Informatif</span>
+              </div>
+              <div class="insight-meta">381 suara · Ekonomi</div>
+              <div class="progress-bar"><div class="progress-fill" style="width:48%;background:var(--teal)"></div></div>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%" onclick="showToast('📊','Memuat semua 128 insight...')">Lihat semua insight →</button>
+        </div>
+      </div>
+
+      <!-- Recordings Preview -->
+      <div>
+        <div class="section-divider"><div class="divider-line"></div>Rekaman Terbaru<div class="divider-line"></div></div>
+        <div style="margin-top:1rem">
+          <div class="section-header">
+            <div class="section-title">Suara yang Masuk Hari Ini</div>
+            <button class="btn btn-primary btn-sm" onclick="openRecordModal()">＋ Rekam Suara</button>
+          </div>
+          <div class="recordings-grid" id="recordings-grid">
+            <!-- JS rendered -->
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end dashboard tab -->
+
+    <!-- ─── ANALISIS TAB ─── -->
+    <div id="tab-analisis" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Analisis AI — Pemrosesan Bahasa Alami</div>
+        <span class="tag tag-teal" style="font-size:12px;padding:4px 10px">Model: SUARA-NLP v2.3</span>
+      </div>
+      <div class="analysis-row">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title" style="font-size:14px">Distribusi Tema Isu</div>
+          </div>
+          <div class="theme-bars">
+            <div class="theme-bar-item">
+              <div class="theme-bar-header"><span class="theme-bar-label">Kesehatan Ibu & Anak</span><span class="theme-bar-pct">34%</span></div>
+              <div class="theme-bar-track"><div class="theme-bar-fill" style="width:34%;background:#e05151"></div></div>
+            </div>
+            <div class="theme-bar-item">
+              <div class="theme-bar-header"><span class="theme-bar-label">Kekerasan Berbasis Gender</span><span class="theme-bar-pct">27%</span></div>
+              <div class="theme-bar-track"><div class="theme-bar-fill" style="width:27%;background:var(--purple)"></div></div>
+            </div>
+            <div class="theme-bar-item">
+              <div class="theme-bar-header"><span class="theme-bar-label">Akses Pendidikan</span><span class="theme-bar-pct">19%</span></div>
+              <div class="theme-bar-track"><div class="theme-bar-fill" style="width:19%;background:var(--accent)"></div></div>
+            </div>
+            <div class="theme-bar-item">
+              <div class="theme-bar-header"><span class="theme-bar-label">Akses Ekonomi & Modal</span><span class="theme-bar-pct">13%</span></div>
+              <div class="theme-bar-track"><div class="theme-bar-fill" style="width:13%;background:var(--teal)"></div></div>
+            </div>
+            <div class="theme-bar-item">
+              <div class="theme-bar-header"><span class="theme-bar-label">Infrastruktur & Layanan</span><span class="theme-bar-pct">7%</span></div>
+              <div class="theme-bar-track"><div class="theme-bar-fill" style="width:7%;background:#3fb950"></div></div>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
+            <div class="brief-section-title">Bahasa Terdeteksi</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+              <span class="tag tag-amber">Jawa (1.2k)</span>
+              <span class="tag tag-teal">Indonesia (987)</span>
+              <span class="tag tag-purple">Bugis (643)</span>
+              <span class="tag tag-red">NTT Mix (512)</span>
+              <span class="tag tag-amber">Sunda (421)</span>
+              <span class="tag" style="background:rgba(63,185,80,0.1);color:#3fb950;border-color:rgba(63,185,80,0.2)">Papua (383)</span>
+              <span class="tag">+17 lainnya</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title" style="font-size:14px">Sentimen & Urgensi Komunal</div>
+          </div>
+          <div class="sentiment-grid">
+            <div class="sentiment-cell">
+              <div class="sentiment-emoji">😔</div>
+              <div class="sentiment-val" style="color:#e05151">42%</div>
+              <div class="sentiment-label">Putus asa / pasrah</div>
+            </div>
+            <div class="sentiment-cell">
+              <div class="sentiment-emoji">😤</div>
+              <div class="sentiment-val" style="color:var(--accent)">31%</div>
+              <div class="sentiment-label">Frustrasi / menuntut</div>
+            </div>
+            <div class="sentiment-cell">
+              <div class="sentiment-emoji">🙏</div>
+              <div class="sentiment-val" style="color:var(--purple)">19%</div>
+              <div class="sentiment-label">Harap / permohonan</div>
+            </div>
+            <div class="sentiment-cell">
+              <div class="sentiment-emoji">💪</div>
+              <div class="sentiment-val" style="color:var(--green)">8%</div>
+              <div class="sentiment-label">Optimis / solutif</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem;padding:12px;background:var(--bg3);border-radius:var(--radius-sm);border-left:3px solid var(--accent)">
+            <div class="brief-section-title" style="margin-bottom:6px">Kutipan AI Paling Representatif</div>
+            <p style="font-family:'Fraunces',serif;font-style:italic;font-size:13px;color:var(--muted);line-height:1.7">"Kami ndak tau harus lapor ke mana. Sudah ke kepala desa, disuruh nunggu. Sudah nunggu tiga tahun, belum ada yang datang."</p>
+            <div style="font-size:11px;color:var(--muted);margin-top:6px">— Ibu R., 34th, Kab. Manggarai, NTT · Diterjemahkan dari bahasa Manggarai</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%" onclick="showToast('🤖','Memuat laporan analisis lengkap...')">Unduh Analisis Lengkap →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── BRIEF TAB ─── -->
+    <div id="tab-brief" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Brief Kebijakan — Dihasilkan AI</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('📤','Mengirim ke Bappeda...')">Kirim ke Bappeda</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('📥','Mengunduh PDF...')">Unduh PDF</button>
+        </div>
+      </div>
+      <div class="brief-card">
+        <div class="brief-header">
+          <div>
+            <div class="brief-title">Laporan Aspirasi Perempuan Desa:<br>Provinsi NTT — April 2025</div>
+            <div class="brief-subtitle">Disintesis dari 847 rekaman · Diproses 22 April 2025 · Model SUARA-NLP v2.3</div>
+          </div>
+          <span class="tag tag-red" style="font-size:12px;padding:5px 12px;white-space:nowrap">Prioritas Tinggi</span>
+        </div>
+        <div style="height:1px;background:rgba(212,168,83,0.2);margin-bottom:1.25rem"></div>
+        <div class="brief-body">
+          <div>
+            <div class="brief-section-title">Temuan Utama</div>
+            <div class="brief-text">Dari 847 rekaman yang masuk dari 23 kecamatan di NTT, 68% membicarakan ketidakmampuan mengakses layanan kesehatan ibu dan anak. Mayoritas menyebut perjalanan lebih dari 4 jam ke puskesmas terdekat sebagai hambatan utama.</div>
+          </div>
+          <div>
+            <div class="brief-section-title">Urgensi Tindakan</div>
+            <div class="brief-action"><div class="brief-action-num">1</div><div>Penugasan darurat bidan desa di 14 kecamatan tanpa tenaga kesehatan menetap</div></div>
+            <div class="brief-action"><div class="brief-action-num">2</div><div>Revisi jalur distribusi obat ibu hamil melalui Puskesmas Keliling</div></div>
+            <div class="brief-action"><div class="brief-action-num">3</div><div>Alokasi anggaran dana desa untuk posyandu darurat di 31 titik</div></div>
+          </div>
+          <div>
+            <div class="brief-section-title">Penerima Brief</div>
+            <div class="brief-text">Dinas Kesehatan NTT · Kementerian PPPA · Bappeda NTT · Anggota DPR Dapil NTT I & II · WHO Indonesia · UNICEF Indonesia</div>
+            <div style="margin-top:10px">
+              <div class="brief-section-title">Status Tindak Lanjut</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--green)">
+                <div class="status-dot done"></div> Diterima Dinkes NTT — 24 April 2025
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- second brief -->
+      <div class="brief-card" style="margin-top:1rem;background:linear-gradient(135deg,rgba(57,197,187,0.06),rgba(57,197,187,0.01));border-color:rgba(57,197,187,0.2)">
+        <div class="brief-header">
+          <div>
+            <div class="brief-title">Laporan Aspirasi Perempuan Desa:<br>Lampung Barat — April 2025</div>
+            <div class="brief-subtitle">Disintesis dari 512 rekaman · Diproses 19 April 2025</div>
+          </div>
+          <span class="tag tag-amber" style="font-size:12px;padding:5px 12px;white-space:nowrap">Prioritas Menengah</span>
+        </div>
+        <div style="height:1px;background:rgba(57,197,187,0.2);margin-bottom:1.25rem"></div>
+        <div class="brief-body">
+          <div>
+            <div class="brief-section-title" style="color:var(--teal)">Temuan Utama</div>
+            <div class="brief-text">Lonjakan perkawinan anak usia 13–16 tahun pasca pandemi. 74% responden menyebut faktor ekonomi sebagai penyebab utama, bukan tradisi.</div>
+          </div>
+          <div>
+            <div class="brief-section-title" style="color:var(--teal)">Urgensi Tindakan</div>
+            <div class="brief-action"><div class="brief-action-num" style="background:rgba(57,197,187,0.2);color:var(--teal)">1</div><div>Program beasiswa bersyarat untuk anak perempuan usia sekolah di 8 kecamatan</div></div>
+            <div class="brief-action"><div class="brief-action-num" style="background:rgba(57,197,187,0.2);color:var(--teal)">2</div><div>Penguatan Unit PKBM (Pusat Kegiatan Belajar Masyarakat) berbasis gender</div></div>
+          </div>
+          <div>
+            <div class="brief-section-title" style="color:var(--teal)">Status</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--muted)">
+              <div class="status-dot processing"></div> Menunggu respons Disdik Lampung
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── REKAMAN TAB ─── -->
+    <div id="tab-rekaman" style="display:none">
+      <div class="section-header">
+        <div class="section-title">Semua Rekaman</div>
+        <button class="btn btn-primary btn-sm" onclick="openRecordModal()">＋ Rekam Suara Baru</button>
+      </div>
+      <div class="recordings-grid" id="recordings-grid-full">
+        <!-- JS rendered -->
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── RECORD MODAL ─── -->
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div id="modal-step-1">
+      <div class="modal-title">Rekam Suara Baru</div>
+      <div class="modal-sub">Pilih bahasa, lalu tekan rekam. Ceritakan masalahmu dengan bebas.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:500">Pilih bahasa bicara:</div>
+      <div class="modal-lang">
+        <button class="lang-btn selected" onclick="selectLang(this)">🇮🇩 Bahasa Indonesia</button>
+        <button class="lang-btn" onclick="selectLang(this)">☕ Basa Jawa</button>
+        <button class="lang-btn" onclick="selectLang(this)">🌊 Basa Sunda</button>
+        <button class="lang-btn" onclick="selectLang(this)">⚓ Basa Bugis</button>
+        <button class="lang-btn" onclick="selectLang(this)">🏝 Bahasa NTT</button>
+        <button class="lang-btn" onclick="selectLang(this)">🌿 Bahasa Papua</button>
+      </div>
+      <div class="rec-visualizer" id="visualizer">
+        <div id="vis-bars"></div>
+      </div>
+      <div id="rec-timer" style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:1rem;font-family:'Fraunces',serif">00:00</div>
+      <div class="modal-btn-row">
+        <button class="rec-big-btn btn-ghost" onclick="closeModal()">Batal</button>
+        <button class="rec-big-btn rec-start" id="rec-btn" onclick="toggleRecord()">🎙 Mulai Rekam</button>
+      </div>
+    </div>
+    <div id="modal-step-2" style="display:none">
+      <div class="modal-title">Memproses Suara...</div>
+      <div class="modal-sub">AI sedang menganalisis rekaman Anda</div>
+      <div class="processing-step show">
+        <div class="proc-item"><div class="proc-icon proc-done">✓</div><span>Rekaman diterima (0:42 detik)</span></div>
+        <div class="proc-item" id="proc2"><div class="proc-icon proc-loading">⟳</div><span>Transkripsi bahasa daerah...</span></div>
+        <div class="proc-item" id="proc3"><div class="proc-icon proc-pending">○</div><span>Klasifikasi tema isu</span></div>
+        <div class="proc-item" id="proc4"><div class="proc-icon proc-pending">○</div><span>Analisis sentimen</span></div>
+        <div class="proc-item" id="proc5"><div class="proc-icon proc-pending">○</div><span>Integrasi ke database komunitas</span></div>
+      </div>
+    </div>
+    <div id="modal-step-3" style="display:none">
+      <div style="text-align:center;padding:1rem 0">
+        <div style="font-size:40px;margin-bottom:12px">✅</div>
+        <div class="modal-title" style="margin-bottom:6px">Suara Berhasil Direkam!</div>
+        <div class="modal-sub" style="margin-bottom:1rem">Rekaman Anda telah ditambahkan ke database komunitas dan akan disertakan dalam brief kebijakan berikutnya.</div>
+        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;text-align:left;margin-bottom:1.25rem">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Tema terdeteksi:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="tag tag-red">Kesehatan Ibu</span>
+            <span class="tag tag-amber">Akses Layanan</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:10px;margin-bottom:4px">Sentimen: <span style="color:var(--accent)">Permohonan / Harap</span></div>
+          <div style="font-size:11px;color:var(--muted)">ID Rekaman: <span style="color:var(--text);font-family:monospace">REC-2025-04847</span></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="closeModal()">Selesai</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✦</span>
+  <span id="toast-msg">Pesan</span>
+</div>
+
+<script>
+// ─── DATA ───
+const recordings = [
+  { name: "Ibu Sari", loc: "Desa Mekar, Lampung Barat", quote: "Anak saya sudah kelas 5, tapi sekolahnya mau dijual orang. Guru cuma datang 3 hari seminggu...", theme: "Pendidikan", status: "done", color: "#3fb950", abbr: "SR" },
+  { name: "Bu Tini", loc: "Kab. Manggarai, NTT", quote: "Waktu saya melahirkan, bidan ndak ada. Harus naik ojek 4 jam ke kota, kondisi sudah darurat...", theme: "Kesehatan", status: "processing", color: "#e05151", abbr: "TN" },
+  { name: "Ibu Yanti", loc: "Kab. Manokwari, Papua Barat", quote: "Suami saya larang saya jualan. Kalau saya punya modal sendiri, pasti bisa bantu anak sekolah...", theme: "Ekonomi", status: "done", color: "#d4a853", abbr: "YN" },
+  { name: "Bu Salmah", loc: "Kab. Luwu, Sulawesi Selatan", quote: "Di sini kaum perempuan tidak boleh bicara di rapat desa. Kami selalu disuruh diam dan nurut...", theme: "KDRT/Hak", status: "review", color: "#a78bfa", abbr: "SM" },
+  { name: "Ibu Ratna", loc: "Kab. Lombok Timur, NTB", quote: "Anak perempuan saya dilamar waktu kelas 2 SMP. Saya nolak tapi keluarga besar menekan...", theme: "Pendidikan", status: "done", color: "#39c5bb", abbr: "RN" },
+  { name: "Bu Hasna", loc: "Kab. Aceh Barat, Aceh", quote: "Usaha kecil saya sudah berjalan tapi susah dapat pinjaman. Katanya perlu suami yang tanda tangan...", theme: "Ekonomi", status: "done", color: "#d4a853", abbr: "HN" },
+];
+
+const tagMap = { "Pendidikan": "tag-amber", "Kesehatan": "tag-red", "Ekonomi": "tag-teal", "KDRT/Hak": "tag-purple" };
+const heights = [12,22,34,20,16,40,28,18,32,24,14,36,20,30,22,18,28,34,16,24,38,20,26,32,18,22,36,28,14,20];
+
+function renderRecordings(containerId) {
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = recordings.map((r,i) => `
+    <div class="recording-card ${r.status==='processing'?'':''}` + (i===1?` playing`:``)+`" onclick="togglePlay(this,${i})">
+      <div class="rec-top">
+        <div class="rec-avatar" style="background:linear-gradient(135deg,${r.color},${r.color}99)">${r.abbr}</div>
+        <div class="rec-status">
+          <div class="status-dot ${r.status}"></div>
+          ${r.status==='done'?'Selesai dianalisis':r.status==='processing'?'Memproses...':'Perlu tinjauan'}
+        </div>
+      </div>
+      <div class="rec-name">${r.name}</div>
+      <div class="rec-loc">📍 ${r.loc}</div>
+      <div class="rec-quote">"${r.quote}"</div>
+      <div class="rec-footer">
+        <div class="waveform">
+          ${heights.map((h,j)=>`<div class="wave-bar" style="height:${h}px;--d:${0.4+j*0.03}s"></div>`).join('')}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="tag ${tagMap[r.theme]||'tag-amber'}">${r.theme}</span>
+          <button class="play-btn">▶</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderRecordings('recordings-grid');
+renderRecordings('recordings-grid-full');
+
+function togglePlay(card) {
+  const wasPlaying = card.classList.contains('playing');
+  document.querySelectorAll('.recording-card').forEach(c => c.classList.remove('playing'));
+  if(!wasPlaying) {
+    card.classList.add('playing');
+    card.querySelector('.play-btn').textContent = '⏸';
+  } else {
+    card.querySelector('.play-btn').textContent = '▶';
+  }
+}
+
+// ─── TABS ───
+function showTab(name, btn) {
+  ['dashboard','rekaman','analisis','brief'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if(el) el.style.display = t===name ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(name==='rekaman') renderRecordings('recordings-grid-full');
+}
+
+// ─── SIDEBAR ───
+function selectRegion(el, name) {
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  showToast('🗺', `Memfilter data untuk ${name}...`);
+}
+function filterIssue(el) {
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  showToast('🔍', `Filter diterapkan`);
+}
+
+// ─── MODAL ───
+let recording = false, timer = null, seconds = 0;
+function openRecordModal() {
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-step-1').style.display = '';
+  document.getElementById('modal-step-2').style.display = 'none';
+  document.getElementById('modal-step-3').style.display = 'none';
+  buildVisBars();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  if(recording) stopRecord();
+}
+function selectLang(btn) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function buildVisBars() {
+  const c = document.getElementById('vis-bars');
+  c.innerHTML = Array.from({length:40},(_,i)=>
+    `<div class="vis-bar" style="height:6px;--d:${0.3+Math.random()*0.6}s;--h:${10+Math.random()*35}px"></div>`
+  ).join('');
+  c.style.display='flex';c.style.alignItems='center';c.style.gap='2px';c.style.height='100%';
+}
+function toggleRecord() {
+  if(!recording) startRecord(); else { stopRecord(); processRecord(); }
+}
+function startRecord() {
+  recording = true;
+  document.getElementById('rec-btn').className = 'rec-big-btn rec-stop';
+  document.getElementById('rec-btn').textContent = '⏹ Berhenti';
+  document.getElementById('visualizer').classList.add('recording-active');
+  seconds = 0;
+  timer = setInterval(() => {
+    seconds++;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0');
+    const s = String(seconds%60).padStart(2,'0');
+    document.getElementById('rec-timer').textContent = m+':'+s;
+  }, 1000);
+}
+function stopRecord() {
+  recording = false;
+  clearInterval(timer);
+  document.getElementById('visualizer').classList.remove('recording-active');
+}
+function processRecord() {
+  document.getElementById('modal-step-1').style.display='none';
+  document.getElementById('modal-step-2').style.display='';
+  const steps = ['proc2','proc3','proc4','proc5'];
+  const labels = ['Transkripsi selesai ✓','Tema: Kesehatan Ibu terdeteksi ✓','Sentimen: Permohonan (73%) ✓','Ditambahkan ke database ✓'];
+  let i=0;
+  const adv = setInterval(()=>{
+    if(i < steps.length) {
+      document.getElementById(steps[i]).innerHTML =
+        `<div class="proc-icon proc-done">✓</div><span>${labels[i]}</span>`;
+      if(i+1<steps.length) {
+        document.getElementById(steps[i+1]).innerHTML =
+          `<div class="proc-icon proc-loading">⟳</div><span>${['Klasifikasi tema isu...','Analisis sentimen...','Integrasi database...'][i]||'Memproses...'}</span>`;
+      }
+      i++;
+    } else {
+      clearInterval(adv);
+      setTimeout(()=>{
+        document.getElementById('modal-step-2').style.display='none';
+        document.getElementById('modal-step-3').style.display='';
+      }, 500);
+    }
+  }, 900);
+}
+
+// ─── TOAST ───
+let toastTimeout;
+function showToast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
